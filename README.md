@@ -10,3 +10,5 @@ This is the corresponding python version of our newly developed and freely downl
 (iii) community significance in comparison to a family of null models, and
 
 (iv) spatial organization (including radius and hemispheric laterality).
+
+Required package: numpy, scipy, bctpy
