@@ -11,4 +11,4 @@ This is the corresponding python version of our newly developed and freely downl
 
 (iv) spatial organization (including radius and hemispheric laterality).
 
-Required package: numpy, scipy, bctpy
+Required package: numpy,scipy
