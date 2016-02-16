@@ -12,6 +12,7 @@ from scipy.spatial import ConvexHull
 import sys
 import random
 import bct
+import genlouvain as gn
 def zrand(part1,part2):
     '''
     ZRAND     Calculates the z-Rand score and Variation of Information
@@ -914,3 +915,54 @@ def comm_ave_pairwise_spatial_dist(partitions,locations):
     ave_dist_network=np.mean(dist_array)
     comm_ave_pairwise_spatial_dist_array[number_communities,1]=ave_dist_network
     return comm_ave_pairwise_spatial_dist_array
+
+def small_world_propensity(A, *argv):
+
+# % a function for calculating the small world propensity of
+# % a given network - assumes that matrix is undirected (symmeteric) and if
+# % not, creates a symmetric matrix which is used for the calculations
+#
+# %NOTE:  This code requires the Bioinformatics Toolbox to be installed
+# %        (uses graphallshortestpaths.m)
+#
+# %Inputs:
+# %   A           the connectivity matrix, weighted or binary
+# %   varargin    a string corresponding to the method of clustering
+# %               to be used, where 'O' is Onnela, 'Z' is Zhang,
+# %               'B' is Barrat, 'bin' is binary (default is Onnela).
+# %               If the user specifies binary analysis, a
+# %               weighted matrix will be converted to a binary matrix
+# %               before proceeding.
+# %
+#
+# %Outputs:
+# %   SWP         the small world propensity of the matrix
+# %   delta_C     the fractional deviation from the expected culstering coefficient of a
+# %                   random network
+# %   delta_L     the fractional deviation from the expected path length of a
+# %                   random network
+#
+# %written by Eric Bridgeford and modified by Sarah F. Muldoon
+#
+# % Reference: Muldoon, Bridgeford, and Bassett (2015) "Small-World Propensity in Weighted,
+# %
+    varargin = list()
+    if argv is None:
+        varargin.append("1")
+
+    if np.sum(A) > 0:
+        bin_matrix = 0
+        if argv[0] == "bin":
+            bin_matrix = 1
+            varargin.append(argv[0])
+            A = A > 0
+        sysmcheck = np.abs(A-A.T)
+        if np.sum(sysmcheck) > 0:
+            print("Input matrix is not symmetric. Symmetrizing.")
+            W = symm_matrix(A, bin_matrix)
+        else:
+            W = A
+    n = len(W)
+
+
+

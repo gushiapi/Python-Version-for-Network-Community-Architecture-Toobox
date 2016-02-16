@@ -10,7 +10,6 @@ from scipy import sparse
 from numpy import linalg
 from scipy.spatial import ConvexHull
 import sys
-import random
 import bct
 def zrand(part1,part2):
     '''
@@ -899,11 +898,11 @@ def comm_ave_pairwise_spatial_dist(partitions,locations):
                     dist_jk=linalg.norm(coordinates_j-coordinates_k)
                     dist_array.append(dist_jk)
                 
-            ave_dist_i=np.mean(dist_array);
+            ave_dist_i=np.mean(dist_array)
             comm_ave_pairwise_spatial_dist_array[i,1]=ave_dist_i
      
     # calculate for the network
-    dist_array=[];
+    dist_array=[]
     for i in range(number_nodes-1):
         coordinates_i=locations[i,:]
         for j in range(i+1,number_nodes):
@@ -914,3 +913,165 @@ def comm_ave_pairwise_spatial_dist(partitions,locations):
     ave_dist_network=np.mean(dist_array)
     comm_ave_pairwise_spatial_dist_array[number_communities,1]=ave_dist_network
     return comm_ave_pairwise_spatial_dist_array
+def genlouvain(W, ci=None, B='modularity', seed=None):
+    '''
+    The optimal community structure is a subdivision of the network into
+    nonoverlapping groups of nodes which maximizes the number of within-group
+    edges and minimizes the number of between-group edges.
+    This function is a fast an accurate multi-iterative generalization of the
+    louvain community detection algorithm. This function subsumes and improves
+    upon modularity_[louvain,finetune]_[und,dir]() and additionally allows to
+    optimize other objective functions (includes built-in Potts Model i
+    Hamiltonian, allows for custom objective-function matrices).
+    Parameters
+    ----------
+    W : NxN np.array
+        directed/undirected weighted/binary adjacency matrix
+    gamma : float
+        resolution parameter. default value=1. Values 0 <= gamma < 1 detect
+        larger modules while gamma > 1 detects smaller modules.
+        ignored if an objective function matrix is specified.
+    ci : Nx1 np.arraylike
+        initial community affiliation vector. default value=None
+    B : str | NxN np.arraylike
+        string describing objective function type, or provides a custom
+        objective-function matrix. builtin values 'modularity' uses Q-metric
+        as objective function, or 'potts' uses Potts model Hamiltonian.
+        Default value 'modularity'.
+    seed : int | None
+        random seed. default value=None. if None, seeds from /dev/urandom.
+    Returns
+    -------
+    ci : Nx1 np.array
+        final community structure
+    q : float
+        optimized q-statistic (modularity only)
+    '''
+    np.random.seed(seed)
+
+    n = len(W)
+    s = np.sum(W)
+
+
+    if ci is None:
+        ci = np.arange(n) + 1
+    else:
+        if len(ci) != n:
+            raise ValueError('initial ci vector size must equal N')
+        _, ci = np.unique(ci, return_inverse=True)
+        ci += 1
+    Mb = ci.copy()
+
+    if B == 'modularity':
+        B = W
+    else:
+        try:
+            B = np.array(B)
+        except:
+            raise ValueError('unknown objective function type')
+
+        if B.shape != W.shape:
+            raise ValueError('objective function matrix does not match '
+                                'size of adjacency matrix')
+        if not np.allclose(B, B.T):
+            print ('Warning: objective function matrix not symmetric, '
+                   'symmetrizing')
+            B = (B + B.T) / 2
+
+    Hnm = np.zeros((n, n))
+    for m in range(1, n + 1):
+        Hnm[:, m - 1] = np.sum(B[:, ci == m], axis=1)  # node to module degree
+    H = np.sum(Hnm, axis=1)  # node degree
+    Hm = np.sum(Hnm, axis=0)  # module degree
+
+    q0 = -np.inf
+    # compute modularity
+    q = np.sum(B[np.tile(ci, (n, 1)) == np.tile(ci, (n, 1)).T]) / s
+
+    first_iteration = True
+
+    while q - q0 > 1e-10:
+        it = 0
+        flag = True
+        while flag:
+            it += 1
+            if it > 1000:
+                raise ValueError('Modularity infinite loop style G. '
+                                    'Please contact the developer.')
+            flag = False
+            for u in np.random.permutation(n):
+                ma = Mb[u] - 1
+                dQ = Hnm[u, :] - Hnm[u, ma] + B[u, u]  # algorithm condition
+                dQ[ma] = 0
+
+                max_dq = np.max(dQ)
+                if max_dq > 1e-10:
+                    flag = True
+                    mb = np.argmax(dQ)
+
+                    Hnm[:, mb] += B[:, u]
+                    Hnm[:, ma] -= B[:, u]  # change node-to-module strengths
+
+                    Hm[mb] += H[u]
+                    Hm[ma] -= H[u]  # change module strengths
+
+                    Mb[u] = mb + 1
+
+        _, Mb = np.unique(Mb, return_inverse=True)
+        Mb += 1
+
+        M0 = ci.copy()
+        if first_iteration:
+            ci = Mb.copy()
+            first_iteration = False
+        else:
+            for u in range(1, n + 1):
+                ci[M0 == u] = Mb[u - 1]  # assign new modules
+
+        n = np.max(Mb)
+        b1 = np.zeros((n, n))
+        for i in range(1, n + 1):
+            for j in range(i, n + 1):
+                # pool weights of nodes in same module
+                bm = np.sum(B[np.ix_(Mb == i, Mb == j)])
+                b1[i - 1, j - 1] = bm
+                b1[j - 1, i - 1] = bm
+        B = b1.copy()
+
+        Mb = np.arange(1, n + 1)
+        Hnm = B.copy()
+        H = np.sum(B, axis=0)
+        Hm = H.copy()
+
+        q0 = q
+        q = np.trace(B) / s  # compute modularity
+
+    return ci, q
+def multislice_static_unsigned(A, gplus):
+   '''
+   INPUTS
+   A is the (weighted) connectivity matrix
+   it is assumsed that all values of the connectivity matrix are positive
+   Gplus is the resolution parameter. If unsure, use default value of 1.
+
+   OUTPUTS
+   S is the partition (or community assignment of all nodes to communities)
+   Q is the modularity of the (optimal) partition
+   lAlambda is the effective fraction of antiferromagnetic edges (see Onnela
+   et al. 2011 http://arxiv.org/pdf/1006.5731v1.pdf)
+
+   This code uses the Louvain heuristic
+
+   DB 2012
+   '''
+   Aplus=A
+   Aplus[A<0]=0
+   twom = np.sum(Aplus)
+   P = np.outer(np.sum(Aplus, axis=1), np.sum(Aplus, axis=0)) / twom
+   B=A-gplus*P;
+   lAlambda = np.sum((np.divide(A,P)<gplus));
+
+   S, Q = genlouvain(B)
+   Q=Q/twom
+   return S,Q,lAlambda
+
