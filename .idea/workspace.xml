@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0f3d4c95-5c37-43b6-a4dd-858195ae8c50" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/lib/test.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/lib/ncat.py" afterPath="$PROJECT_DIR$/build/lib/ncat.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ncat.py" afterPath="$PROJECT_DIR$/ncat.py" />
     </list>
     <ignored path="Python Version.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -40,14 +39,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ncat.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ncat.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/build/lib/ncat.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.47058824">
+            <state vertical-scroll-proportion="0.0">
               <caret line="1012" column="0" selection-start-line="1012" selection-start-column="0" selection-end-line="1012" selection-end-column="0" />
               <folding>
                 <element signature="e#164#182#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ncat.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/ncat.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.95187163">
+              <caret line="1071" column="22" selection-start-line="1071" selection-start-column="22" selection-end-line="1071" selection-end-column="22" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -111,10 +120,10 @@
       <list>
         <option value="$PROJECT_DIR$/genlouvain.py" />
         <option value="$PROJECT_DIR$/maintests.py" />
-        <option value="$PROJECT_DIR$/ncat.py" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/build/lib/test.py" />
         <option value="$PROJECT_DIR$/build/lib/ncat.py" />
+        <option value="$PROJECT_DIR$/ncat.py" />
       </list>
     </option>
   </component>
@@ -173,24 +182,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="Python Version" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Python Version" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Python Version" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="build" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="lib" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -543,6 +534,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -582,13 +574,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.34951457">
           <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ncat.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.44652405">
-          <caret line="1056" column="10" selection-start-line="1056" selection-start-column="10" selection-end-line="1056" selection-end-column="10" />
         </state>
       </provider>
     </entry>
@@ -636,11 +621,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/build/lib/ncat.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.47058824">
+        <state vertical-scroll-proportion="0.0">
           <caret line="1012" column="0" selection-start-line="1012" selection-start-column="0" selection-end-line="1012" selection-end-column="0" />
           <folding>
             <element signature="e#164#182#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ncat.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.95187163">
+          <caret line="1071" column="22" selection-start-line="1071" selection-start-column="22" selection-end-line="1071" selection-end-column="22" />
+          <folding />
         </state>
       </provider>
     </entry>

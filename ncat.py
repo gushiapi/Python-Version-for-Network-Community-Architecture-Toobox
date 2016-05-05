@@ -977,7 +977,7 @@ def genlouvain(W, ci=None, B='modularity', seed=None):
             print ('Warning: objective function matrix not symmetric, '
                    'symmetrizing')
             B = (B + B.T) / 2
-
+    B = np.squeeze(np.asarray(B))
     Hnm = np.zeros((n, n))
     for m in range(1, n + 1):
         Hnm[:, m - 1] = np.sum(B[:, ci == m], axis=1)  # node to module degree
@@ -1008,7 +1008,6 @@ def genlouvain(W, ci=None, B='modularity', seed=None):
                 if max_dq > 1e-10:
                     flag = True
                     mb = np.argmax(dQ)
-
                     Hnm[:, mb] += B[:, u]
                     Hnm[:, ma] -= B[:, u]  # change node-to-module strengths
 
@@ -1053,15 +1052,12 @@ def multislice_static_unsigned(A, gplus):
    A is the (weighted) connectivity matrix
    it is assumsed that all values of the connectivity matrix are positive
    Gplus is the resolution parameter. If unsure, use default value of 1.
-
    OUTPUTS
    S is the partition (or community assignment of all nodes to communities)
    Q is the modularity of the (optimal) partition
    lAlambda is the effective fraction of antiferromagnetic edges (see Onnela
    et al. 2011 http://arxiv.org/pdf/1006.5731v1.pdf)
-
    This code uses the Louvain heuristic
-
    DB 2012
    '''
    Aplus=A
@@ -1074,4 +1070,3 @@ def multislice_static_unsigned(A, gplus):
    S, Q = genlouvain(B)
    Q=Q/twom
    return S,Q,lAlambda
-
