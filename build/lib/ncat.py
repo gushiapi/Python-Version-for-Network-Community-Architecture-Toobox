@@ -977,7 +977,7 @@ def genlouvain(W, ci=None, B='modularity', seed=None):
             print ('Warning: objective function matrix not symmetric, '
                    'symmetrizing')
             B = (B + B.T) / 2
-
+    B = np.squeeze(np.asarray(B))
     Hnm = np.zeros((n, n))
     for m in range(1, n + 1):
         Hnm[:, m - 1] = np.sum(B[:, ci == m], axis=1)  # node to module degree
@@ -1008,7 +1008,6 @@ def genlouvain(W, ci=None, B='modularity', seed=None):
                 if max_dq > 1e-10:
                     flag = True
                     mb = np.argmax(dQ)
-
                     Hnm[:, mb] += B[:, u]
                     Hnm[:, ma] -= B[:, u]  # change node-to-module strengths
 
